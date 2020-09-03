@@ -1,15 +1,15 @@
 package annotations.ca;
 
 import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 @Documented
-@Retention(RUNTIME)
+@Retention(SOURCE)
 @Target(TYPE)
-public @interface Incapsulated {
+public @interface AddConstructor {
 
 }

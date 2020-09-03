@@ -75,7 +75,7 @@ public class IncapsulatedAnnotationsProcessor extends AbstractProcessor {
 			}
 			
 			if(incrementConstructor == 0){
-				processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This CLASS has no CONSTRUCTOR");
+				processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This CLASS has no CONSTRUCTOR", e);
 			}
 		}
 					

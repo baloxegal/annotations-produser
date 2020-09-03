@@ -1,1 +1,2 @@
 annotations.ca.IncapsulatedAnnotationsProcessor
+annotations.ca.AddConstructorAnnotationsProcessor
