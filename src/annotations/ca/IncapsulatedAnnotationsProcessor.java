@@ -2,6 +2,8 @@ package annotations.ca;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -71,6 +73,15 @@ public class IncapsulatedAnnotationsProcessor extends AbstractProcessor {
 						if(incrementSet == 0) {
 							processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This FIELD has no set SETTER", ee);
 						}
+					}
+				}
+				else if(enclosedElementsKinds.get(ee).equals(ElementKind.CONSTRUCTOR)) {
+					
+					List<ElementKind> constructorElementsKind = new ArrayList<ElementKind>();
+					ee.getEnclosedElements().forEach(ek -> constructorElementsKind.add(ek.getKind()));
+					
+					if(!constructorElementsKind.contains(ElementKind.PARAMETER)) {
+						processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This CLASS has no CONSTRUCTOR with PARAMETERS", e);
 					}
 				}
 			}
