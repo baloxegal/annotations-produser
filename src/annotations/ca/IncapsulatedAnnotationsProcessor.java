@@ -2,7 +2,6 @@ package annotations.ca;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -10,14 +9,10 @@ import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.type.TypeVisitor;
 import javax.tools.Diagnostic.Kind;
 
 @SupportedAnnotationTypes("annotations.ca.Incapsulated")
@@ -89,7 +84,7 @@ public class IncapsulatedAnnotationsProcessor extends AbstractProcessor {
 					List<ElementKind> constructorElementsKind = new ArrayList<ElementKind>();
 					ee.getEnclosedElements().forEach(ek -> constructorElementsKind.add(ek.getKind()));
 										
-					if(constructorElementsKind.contains(ElementKind.PARAMETER)) {
+					if(!constructorElementsKind.contains(ElementKind.PARAMETER)) {
 						incrementConstructorParameters++;
 						processingEnv.getMessager().printMessage(Kind.WARNING, "WOW!", e);
 					}					
@@ -101,38 +96,7 @@ public class IncapsulatedAnnotationsProcessor extends AbstractProcessor {
 			}
 			else
 				processingEnv.getMessager().printMessage(Kind.WARNING, "Booo!", e);
-			TypeVisitor<enclosedElementsKinds, P> vb = new TypeMirror() {
-				
-				@Override
-				public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
-					// TODO Auto-generated method stub
-					return null;
-				}
-				
-				@Override
-				public List<? extends AnnotationMirror> getAnnotationMirrors() {
-					// TODO Auto-generated method stub
-					return null;
-				}
-				
-				@Override
-				public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-					// TODO Auto-generated method stub
-					return null;
-				}
-				
-				@Override
-				public TypeKind getKind() {
-					// TODO Auto-generated method stub
-					return null;
-				}
-				
-				@Override
-				public <R, P> R accept(TypeVisitor<R, P> v, P p) {
-					// TODO Auto-generated method stub
-					return null;
-				}
-			};
+			
 			processingEnv.getMessager().printMessage(Kind.WARNING, "++!", e);
 		}
 					
