@@ -22,13 +22,27 @@ public class IncapsulatedAnnotationsProcessor extends AbstractProcessor {
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		
 		for(var e : roundEnv.getElementsAnnotatedWith(Incapsulated.class)) {
-			
+					
 			Map<Element,ElementKind> enclosedElementsKinds = new HashMap<Element, ElementKind>();
 			
 			e.getEnclosedElements().forEach(ee -> enclosedElementsKinds.put(ee, ee.getKind()));
-									
-			if(!enclosedElementsKinds.containsValue(ElementKind.CONSTRUCTOR)) {
-				processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This CLASS has no CONSTRUCTOR", e);	
+			
+			String vv = "";
+			
+			for(var v : enclosedElementsKinds.entrySet()) {
+				if(v.getValue().equals(ElementKind.CONSTRUCTOR)) {
+					for(var p : processingEnv.getElementUtils().getAllMembers((TypeElement) e.getEnclosingElement())) {
+						vv = vv + p.getSimpleName() + ", ";
+					}
+				}
+			}
+			
+			if(enclosedElementsKinds.containsValue(ElementKind.CONSTRUCTOR)) {
+					for(var a : processingEnv.getElementUtils().getAllMembers((TypeElement) e)) {
+					
+				}
+				processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops!" + vv, e);
+//				processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This CLASS has no CONSTRUCTOR", e);	
 			}
 			
 			int incrementConstructorParameters = 0;
