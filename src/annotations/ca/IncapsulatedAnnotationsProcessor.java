@@ -2,8 +2,6 @@ package annotations.ca;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -26,41 +24,21 @@ public class IncapsulatedAnnotationsProcessor extends AbstractProcessor {
 			Map<Element,ElementKind> enclosedElementsKinds = new HashMap<Element, ElementKind>();
 			
 			e.getEnclosedElements().forEach(ee -> enclosedElementsKinds.put(ee, ee.getKind()));
-			
-			String vv = "";
-			
-			for(var v : enclosedElementsKinds.entrySet()) {
-				if(v.getValue().equals(ElementKind.CONSTRUCTOR)) {
-					for(var p : processingEnv.getElementUtils().getAllMembers((TypeElement) e.getEnclosingElement())) {
-						vv = vv + p.getSimpleName() + ", ";
-					}
-				}
-			}
-			
-			if(enclosedElementsKinds.containsValue(ElementKind.CONSTRUCTOR)) {
-					for(var a : processingEnv.getElementUtils().getAllMembers((TypeElement) e)) {
-					
-				}
-				processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops!" + vv, e);
-//				processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This CLASS has no CONSTRUCTOR", e);	
-			}
-			
-			int incrementConstructorParameters = 0;
-									
-			for(var ee : enclosedElementsKinds.keySet()) {
+
+			for(var ee : enclosedElementsKinds.entrySet()) {
 				
-				if(enclosedElementsKinds.get(ee).equals(ElementKind.FIELD)) {
+				if(ee.getValue().equals(ElementKind.FIELD)) {
 				
-					if(ee.getModifiers().isEmpty()) {
-						processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This FIELD has no set modifier", ee);
+					if(ee.getKey().getModifiers().isEmpty()) {
+						processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This FIELD has no set modifier", ee.getKey());
 					}
 					
-					if(ee.getModifiers().contains(Modifier.PUBLIC) && !ee.getModifiers().contains(Modifier.FINAL)) {
-						processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This FIELD is not FINAL and set to PUBLIC modifier", ee);
+					if(ee.getKey().getModifiers().contains(Modifier.PUBLIC) && !ee.getKey().getModifiers().contains(Modifier.STATIC)) {
+						processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This FIELD is not FINAL or STATIC and set to PUBLIC modifier", ee.getKey());
 					}
 					
-					else if(ee.getModifiers().contains(Modifier.PRIVATE) || ee.getModifiers().contains(Modifier.PROTECTED)
-							|| ee.getModifiers().isEmpty()){
+					else if(ee.getKey().getModifiers().contains(Modifier.PRIVATE) || ee.getKey().getModifiers().contains(Modifier.PROTECTED)
+							|| ee.getKey().getModifiers().isEmpty()){
 						
 						int incrementGet = 0, incrementSet = 0;
 												
@@ -72,46 +50,26 @@ public class IncapsulatedAnnotationsProcessor extends AbstractProcessor {
 									processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This METHOD is set to PRIVATE modifier", m);
 								}
 								
-								if(m.getSimpleName().toString().equalsIgnoreCase("get".concat(ee.getSimpleName().toString()))){
+								if(m.getSimpleName().toString().equalsIgnoreCase("get".concat(ee.getKey().getSimpleName().toString()))){
 									incrementGet++;
 								}
 								
-								else if(m.getSimpleName().toString().equalsIgnoreCase("set".concat(ee.getSimpleName().toString()))){
+								else if(m.getSimpleName().toString().equalsIgnoreCase("set".concat(ee.getKey().getSimpleName().toString()))){
 									incrementSet++;
 								}
 							}
 						}
 						
 						if(incrementGet == 0) {
-							processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This FIELD has no set GETTER", ee);
+							processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This FIELD has no set GETTER", ee.getKey());
 						}
 						
 						if(incrementSet == 0) {
-							processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This FIELD has no set SETTER", ee);
+							processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This FIELD has no set SETTER", ee.getKey());
 						}
 					}
 				}
-				else if(enclosedElementsKinds.get(ee).equals(ElementKind.CONSTRUCTOR)) {
-										
-					processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops!" + ee.getClass().getSimpleName(), e);
-					
-					List<ElementKind> constructorElementsKind = new ArrayList<ElementKind>();
-					ee.getEnclosedElements().forEach(ek -> constructorElementsKind.add(ek.getKind()));
-										
-					if(!constructorElementsKind.contains(ElementKind.PARAMETER)) {
-						incrementConstructorParameters++;
-						processingEnv.getMessager().printMessage(Kind.WARNING, "WOW!", e);
-					}					
-				}
-				processingEnv.getMessager().printMessage(Kind.WARNING, "--!" + ee.getClass().getSimpleName(), e);
-			}			
-			if(incrementConstructorParameters == 0) {
-				processingEnv.getMessager().printMessage(Kind.WARNING, "Ooops! This CLASS has no CONSTRUCTOR with PARAMETERS", e);
 			}
-			else
-				processingEnv.getMessager().printMessage(Kind.WARNING, "Booo!", e);
-			
-			processingEnv.getMessager().printMessage(Kind.WARNING, "++!", e);
 		}
 					
 		return true;

@@ -8,7 +8,7 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.element.TypeElement;
 
 @SupportedAnnotationTypes("annotations.ca.AddConstructor")
-public class AddConstructorAnnotationProcessor extends AbstractProcessor {
+public class AddConstructorAnnotationsProcessor extends AbstractProcessor {
 
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
