@@ -20,20 +20,15 @@ public class TestAgent {
 									ProtectionDomain domain,
 									byte[] buffer) {
 								
-				System.out.println("Class was loaded: " + name);
-				System.out.println("Loader used: " + loader + "\n");
+//				System.out.println("Class was loaded: " + name);
+//				System.out.println("Loader used: " + loader + "\n");
+				
+				
 				
 				return null;
 			}
 						
 		});
-		
-//		Arrays.asList(instrumentation.getAllLoadedClasses()).forEach(System.out :: println);		
-						
-//		for(var c : instrumentation.getInitiatedClasses(new ClassLoader() {
-//		})) {
-//			System.out.println(c.getName());
-//		}
-		
+
 	}
 }
