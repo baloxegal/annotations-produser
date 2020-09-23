@@ -1,11 +1,14 @@
 package instrumentation;
 
-import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtConstructor;
+import javassist.CtField;
 import javassist.CtNewConstructor;
+
 import javassist.NotFoundException;
+import annotations.ca.AddConstructor;
+import javassist.CannotCompileException;
 
 public class ClassTransformer {
 	
@@ -16,16 +19,41 @@ public class ClassTransformer {
 		ClassPool pool = ClassPool.getDefault();
 		
 		CtClass cc = pool.get(className);
-				
-		CtConstructor ccons = cc.getDeclaredConstructor(null);
-		cc.removeConstructor(ccons);
 		
-		CtConstructor cstructor = CtNewConstructor.defaultConstructor(cc);
-			
-		cstructor.setBody("this.age = 50;");
-		cc.addConstructor(cstructor);
+//		if(!cc.getPackageName().equalsIgnoreCase("domain") || cc.isInterface() || !cc.hasAnnotation(AddConstructor.class)){
+//			return cc.toClass();
+//		}
 		
-		System.out.println("ENDING CLASS TRANSFORMATION");
+//		CtConstructor ccons = cc.getDeclaredConstructor(null);
+//		cc.removeConstructor(ccons);
+//		
+//		CtConstructor cstructor = CtNewConstructor.defaultConstructor(cc);
+//			
+//		cstructor.setBody("this.age = Integer.valueOf(50);");
+//		cc.addConstructor(cstructor);
+		
+		CtField[] cf = cc.getDeclaredFields();
+		CtField[] cfm = cc.getDeclaredFields();
+		CtClass[] cft = new CtClass[cf.length];
+		
+		for(int i = 0, j = 0; i < cf.length; i++) {
+			if(cf[i].getModifiers() != 1) {
+				cfm[j] = cf[i];
+				cft[j] = cf[i].getType();
+				j++;
+			}
+		}
+		
+//		CtConstructor ccons = CtNewConstructor.make("public Person (Integer age, Boolean isBuyer)", cc);
+//		ccons.setBody("this.age = age; this.isBuyer = isBuyer;");
+		
+		CtConstructor ccons = new CtConstructor(cft, cc);
+		
+		ccons.setBody("{this.age = age; this.isBuyer = isBuyer;}");
+		
+		cc.addConstructor(ccons);
+		
+		System.out.println("ENDING CLASS TRANSFORMATION");		
 	
 		return cc.toClass();
 	}

@@ -22,9 +22,7 @@ public class TestAgent {
 								
 //				System.out.println("Class was loaded: " + name);
 //				System.out.println("Loader used: " + loader + "\n");
-				
-				
-				
+			
 				return null;
 			}
 						
