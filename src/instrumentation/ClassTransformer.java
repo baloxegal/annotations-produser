@@ -4,9 +4,8 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtConstructor;
 import javassist.CtNewConstructor;
-import javassist.CtField;
-
-import java.lang.reflect.Modifier;
+//import javassist.CtField;
+//import java.lang.reflect.Modifier;
 
 import annotations.ca.AddConstructor;
 
