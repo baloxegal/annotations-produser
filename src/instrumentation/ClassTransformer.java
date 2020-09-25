@@ -4,8 +4,8 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtConstructor;
 import javassist.CtNewConstructor;
-//import javassist.CtField;
-//import java.lang.reflect.Modifier;
+import javassist.CtField;
+import java.lang.reflect.Modifier;
 
 import annotations.ca.AddConstructor;
 
@@ -30,28 +30,44 @@ public class ClassTransformer {
 		cc.removeConstructor(cconsDef);
 		
 		CtConstructor cstructor = CtNewConstructor.defaultConstructor(cc);
-			
 		cstructor.setBody("this.age = Integer.valueOf(70);");
 		cc.addConstructor(cstructor);
 		
-//		CtField[] cf = cc.getDeclaredFields();
-//		String[] cfm = new String[cf.length];
-//		CtClass[] cft = new CtClass[cf.length];
-//		
-//		for(int i = 0, j = 0; i < cf.length; i++) {
-//			if(cf[i].getModifiers() == Modifier.PRIVATE) {
-//				cfm[j] = cf[i].getName();
-//				cft[j] = cf[i].getType();
-//				j++;
-//			}
-//		}		
+		CtField[] cf = cc.getDeclaredFields();
+		String[] cfm = new String[cf.length];
+				
+		for(int i = 0, j = 0; i < cf.length; i++) {
+			if(cf[i].getModifiers() == Modifier.PRIVATE) {
+				cfm[j] = cf[i].getType().getSimpleName() + " " + cf[i].getName();
+				j++;
+			}
+		}		
 
-		CtConstructor ccons = CtNewConstructor.make("public Person(Integer age, Boolean isBuyer){this.age = age; this.isBuyer = isBuyer;}", cc);
+//		CtConstructor ccons = CtNewConstructor.make("public Person(Integer age, Boolean isBuyer){this.age = age; this.isBuyer = isBuyer;}", cc);
 		
-//		CtConstructor ccons = CtNewConstructor.make("public " + cc.getSimpleName()
-//								+ "(" + cft[0] + " " + cfm[0] + ", " + cft[1] + " " + cfm[1]
-//								+ ") {this." + cfm[0] + " = " + cfm[0] + "; "
-//								+ "this." + cfm[1] + " = " + cfm[1] + ";}", cc);
+		String consString = "public " + cc.getSimpleName() + " (";
+		
+		for(int i = 0; i < cfm.length; i++) {
+			consString += cfm[i];
+			if(i != cfm.length - 1) {
+				consString += ", ";
+			}
+			else {
+				consString += ") {";
+			}
+		}
+		
+		for(int i = 0; i < cfm.length; i++) {
+			consString += "this." + cfm[i].substring(cfm[i].indexOf(" ") + 1) + " = " + cfm[i].substring(cfm[i].indexOf(" ") + 1);
+			if(i != cfm.length - 1) {
+				consString += "; ";
+			}
+			else {
+				consString += ";}";
+			}
+		}		
+		
+		CtConstructor ccons = CtNewConstructor.make(consString, cc);
 		
 		cc.addConstructor(ccons);
 		
