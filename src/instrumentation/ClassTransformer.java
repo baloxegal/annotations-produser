@@ -5,6 +5,8 @@ import javassist.CtClass;
 import javassist.CtConstructor;
 import javassist.CtNewConstructor;
 import javassist.CtField;
+
+import java.io.IOException;
 import java.lang.reflect.Modifier;
 
 import annotations.ca.AddConstructor;
@@ -14,8 +16,8 @@ import javassist.CannotCompileException;
 
 public class ClassTransformer {
 	
-	public static Class<?> transform(String className) throws NotFoundException, CannotCompileException {
-		
+	public static Class<?> transform(String className) throws NotFoundException, CannotCompileException, IOException {
+			
 		System.out.println("STARTING CLASS TRANSFORMATION");
 		
 		ClassPool pool = ClassPool.getDefault();
